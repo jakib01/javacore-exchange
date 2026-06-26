@@ -7,6 +7,8 @@ public class Trade {
 
     private String buyOrderId;
     private String sellOrderId;
+    private String buyAccountId;
+    private String sellAccountId;
     private String symbol;
     private BigDecimal price;
     private int quantity;
@@ -14,6 +16,12 @@ public class Trade {
 
     public Trade(String buyOrderId, String sellOrderId, String symbol,
                  BigDecimal price, int quantity, Instant executedAt) {
+        // Backwards-compatible constructor (Stage 1): no account attribution.
+        this(buyOrderId, sellOrderId, null, null, symbol, price, quantity, executedAt);
+    }
+
+    public Trade(String buyOrderId, String sellOrderId, String buyAccountId, String sellAccountId,
+                 String symbol, BigDecimal price, int quantity, Instant executedAt) {
         if (price == null || price.compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException("price must be positive");
         }
@@ -22,6 +30,8 @@ public class Trade {
         }
         this.buyOrderId = buyOrderId;
         this.sellOrderId = sellOrderId;
+        this.buyAccountId = buyAccountId;
+        this.sellAccountId = sellAccountId;
         this.symbol = symbol;
         this.price = price;
         this.quantity = quantity;
@@ -38,6 +48,14 @@ public class Trade {
 
     public String getSellOrderId() {
         return sellOrderId;
+    }
+
+    public String getBuyAccountId() {
+        return buyAccountId;
+    }
+
+    public String getSellAccountId() {
+        return sellAccountId;
     }
 
     public String getSymbol() {

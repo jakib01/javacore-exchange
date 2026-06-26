@@ -8,6 +8,10 @@ public class MarketOrder extends Order {
         super(id, side, symbol, quantity);
     }
 
+    public MarketOrder(String id, Side side, String symbol, int quantity, String accountId) {
+        super(id, side, symbol, quantity, accountId);
+    }
+
     @Override
     public boolean isMatchable(BigDecimal bestPrice) {
         return bestPrice != null;

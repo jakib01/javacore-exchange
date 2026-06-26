@@ -9,10 +9,17 @@ public abstract class Order {
     private Side side;
     private String symbol;
     private int quantity;
+    private int filledQuantity;
+    private String accountId;
     private Instant timestamp;
     private OrderStatus status;
 
     public Order(String id, Side side, String symbol, int quantity) {
+        // Backwards-compatible constructor (Stage 1): no account attribution.
+        this(id, side, symbol, quantity, null);
+    }
+
+    public Order(String id, Side side, String symbol, int quantity, String accountId) {
         if (id == null || id.isEmpty()) {
             throw new IllegalArgumentException("id required");
         }
@@ -30,6 +37,8 @@ public abstract class Order {
         this.side = side;
         this.symbol = symbol;
         this.quantity = quantity;
+        this.filledQuantity = 0;
+        this.accountId = accountId;
         this.timestamp = Instant.now();
         this.status = OrderStatus.NEW;
     }
@@ -50,6 +59,38 @@ public abstract class Order {
 
     public int getQuantity() {
         return quantity;
+    }
+
+    public int getFilledQuantity() {
+        return filledQuantity;
+    }
+
+    public int getRemainingQuantity() {
+        return quantity - filledQuantity;
+    }
+
+    public boolean isFullyFilled() {
+        return filledQuantity == quantity;
+    }
+
+    public String getAccountId() {
+        return accountId;
+    }
+
+    /**
+     * Apply a fill of {@code qty} units against this order. Advances the status
+     * NEW -> PARTIALLY_FILLED -> FILLED automatically as quantity is consumed.
+     */
+    public void fill(int qty) {
+        if (qty <= 0) {
+            throw new IllegalArgumentException("fill quantity must be positive");
+        }
+        if (qty > getRemainingQuantity()) {
+            throw new IllegalStateException("cannot fill " + qty
+                    + " units, only " + getRemainingQuantity() + " remaining on order " + id);
+        }
+        filledQuantity += qty;
+        status = isFullyFilled() ? OrderStatus.FILLED : OrderStatus.PARTIALLY_FILLED;
     }
 
     public Instant getTimestamp() {

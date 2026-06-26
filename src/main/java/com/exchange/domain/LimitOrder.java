@@ -7,7 +7,11 @@ public class LimitOrder extends Order {
     private BigDecimal limitPrice;
 
     public LimitOrder(String id, Side side, String symbol, int quantity, BigDecimal limitPrice) {
-        super(id, side, symbol, quantity);
+        this(id, side, symbol, quantity, limitPrice, null);
+    }
+
+    public LimitOrder(String id, Side side, String symbol, int quantity, BigDecimal limitPrice, String accountId) {
+        super(id, side, symbol, quantity, accountId);
         if (limitPrice == null || limitPrice.compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException("limitPrice must be positive");
         }
