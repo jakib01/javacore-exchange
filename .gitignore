@@ -4,6 +4,9 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 
+# Generated session output (Stage 3) — orders.csv is tracked, trades.csv is not
+data/trades.csv
+
 # Java
 *.class
 *.jar

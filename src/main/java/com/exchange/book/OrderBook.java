@@ -170,6 +170,25 @@ public class OrderBook {
     }
 
     /**
+     * Snapshot of resting depth on one side: price &rarr; total open quantity,
+     * iterated in priority order (best price first). Returned as a
+     * {@link java.util.LinkedHashMap} so that priority order is preserved for
+     * display — used by the {@code book} console command.
+     */
+    public Map<BigDecimal, Integer> depth(Side side) {
+        TreeMap<BigDecimal, Deque<LimitOrder>> sideMap = (side == Side.BUY) ? bids : asks;
+        Map<BigDecimal, Integer> levels = new java.util.LinkedHashMap<>();
+        for (Map.Entry<BigDecimal, Deque<LimitOrder>> level : sideMap.entrySet()) {
+            int total = 0;
+            for (LimitOrder o : level.getValue()) {
+                total += o.getRemainingQuantity();
+            }
+            levels.put(level.getKey(), total);
+        }
+        return levels;
+    }
+
+    /**
      * Remove a still-resting limit order from the book by id (used by cancel).
      *
      * @return {@code true} if the order was found and removed

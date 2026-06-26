@@ -1,0 +1,19 @@
+# id,type,side,symbol,quantity,price,account
+# Lines starting with '#' are comments; blank lines are ignored.
+#
+# --- Market maker posts two-sided liquidity on AAPL ---
+MM-A1,LIMIT,SELL,AAPL,500,190.00,MM
+MM-A2,LIMIT,SELL,AAPL,500,190.50,MM
+MM-B1,LIMIT,BUY,AAPL,500,189.00,MM
+
+# --- Alice (ACC1) takes liquidity ---
+ORD-1,LIMIT,BUY,AAPL,300,190.00,ACC1
+ORD-2,MARKET,BUY,AAPL,400,,ACC1
+
+# --- Bob (ACC2) sells into the resting bid ---
+ORD-3,LIMIT,SELL,AAPL,200,189.00,ACC2
+
+# --- Valid CSV, but each breaks a business rule and should be REJECTED ---
+BAD-1,LIMIT,BUY,TSLA,10,100.00,ACC1
+BAD-2,LIMIT,BUY,AAPL,1000000,200.00,ACC1
+BAD-3,LIMIT,SELL,MSFT,50,300.00,ACC1

@@ -127,6 +127,24 @@ public class TradeLog {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * The most recent traded price for a symbol — the "mark" used to value open
+     * positions in {@link com.exchange.engine.PnlReport}. Empty if the symbol has
+     * never traded.
+     *
+     * <p>Walks the journal newest-first and stops at the first match, so it is a
+     * short-circuiting {@code findFirst} rather than a full scan.
+     */
+    public Optional<BigDecimal> lastPrice(String symbol) {
+        for (int i = trades.size() - 1; i >= 0; i--) {
+            Trade t = trades.get(i);
+            if (t.getSymbol().equals(symbol)) {
+                return Optional.of(t.getPrice());
+            }
+        }
+        return Optional.empty();
+    }
+
     public int size() {
         return trades.size();
     }

@@ -8,6 +8,7 @@ public class Account {
 
     private String id;
     private String owner;
+    private BigDecimal initialCash;
     private BigDecimal cashBalance;
     private BigDecimal reservedCash;
     private Map<String, Integer> positions;
@@ -25,6 +26,7 @@ public class Account {
 
         this.id = id;
         this.owner = owner;
+        this.initialCash = initialCash;        // Stage 3: remembered so P&L can baseline against it
         this.cashBalance = initialCash;
         this.reservedCash = BigDecimal.ZERO;
         this.positions = new HashMap<String, Integer>();
@@ -86,6 +88,10 @@ public class Account {
 
     public String getOwner() {
         return owner;
+    }
+
+    public BigDecimal getInitialCash() {
+        return initialCash;
     }
 
     public BigDecimal getCashBalance() {
